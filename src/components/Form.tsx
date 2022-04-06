@@ -1,4 +1,5 @@
 import { Field } from 'formik';
+import styled from 'styled-components';
 interface IFormInput {
   name: string;
   label?: string;
@@ -24,7 +25,7 @@ export const FormSelect = ({ values, name, label }: IFormSelect) => {
   return (
     <div>
       <label htmlFor={name}>{label}</label>
-      <Field component="select" id={name} name={name}>
+      <Field id={name} name={name} as={$Select}>
         {values.map((value, index) => {
           return (
             <option value={value} key={index}>
@@ -36,3 +37,7 @@ export const FormSelect = ({ values, name, label }: IFormSelect) => {
     </div>
   );
 };
+
+const $Select = styled.select`
+  width: 100%;
+`;
