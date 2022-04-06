@@ -55,7 +55,7 @@ export default function Home() {
             <p>There is nothing</p>
           ) : (
             universities.map((uni, index: number) => {
-              return <Card key={index} name={uni.name} domains={uni.domains} />;
+              return <Card key={index} name={uni.name} />;
             })
           )}
         </$UniversityList>
@@ -71,10 +71,13 @@ const $Heading = styled.div`
 `;
 const $Body = styled.div`
   display: grid;
-  grid-template-columns: 10% 90%;
+  grid-template-columns: 20% 80%;
 `;
 const $FormWrapper = styled.div``;
 const $UniversityList = styled.div`
   margin-left: 3.5rem;
+  justify-self: center;
+  max-width: 54rem;
+  width: 100%;
 `;
 const $Button = styled(Btn)``;

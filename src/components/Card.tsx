@@ -1,15 +1,13 @@
 import styled from 'styled-components';
 import { Text } from '@/styles/common';
 import Link from 'next/link';
-interface ICard {
-  name: string;
-  domains: Array<string>;
-}
-export const Card = ({ name, domains }: ICard) => {
+import { IUniversity } from '@/helpers/types';
+type UniversityName = Pick<IUniversity, 'name'>;
+export const Card = ({ name }: UniversityName) => {
   return (
     <$Card>
       <Text>{name}</Text>
-      <Link href={`/${name}`}>Learn More</Link>
+      <Link href={`/details/${name}`}>Learn More</Link>
     </$Card>
   );
 };
@@ -20,6 +18,4 @@ const $Card = styled.div`
   &:not(:last-child) {
     margin-bottom: 1rem;
   }
-  max-width: 54rem;
-  width: 100%;
 `;
