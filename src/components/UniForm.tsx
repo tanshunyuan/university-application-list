@@ -2,7 +2,7 @@ import { IUniversity } from '@/helpers/types';
 import { Btn } from '@/styles/common';
 import { Form, Formik, FieldArray, Field } from 'formik';
 import { useEffect, useState } from 'react';
-import { FormInput } from './Form';
+import { FormArray, FormInput } from './Form';
 
 type IUniForm = Pick<IUniversity, 'country' | 'domains' | 'web_pages'>;
 type UniFormProps = {
@@ -40,60 +40,8 @@ export const UniForm = ({ data, isEdit = false }: UniFormProps) => {
           placeholder="Slovika"
           type="text"
         />
-        <FieldArray name="domains">
-          {({ push, remove, form }) => {
-            const {
-              values: { domains },
-            } = form;
-            return (
-              <div>
-                <label htmlFor="domains">Domains</label>
-                {domains.map((_: string, index: number) => {
-                  return (
-                    <div key={index}>
-                      <Field
-                        name={`domains[${index}]`}
-                        placeholder="google.com"
-                        type="text"
-                      />
-                      <button onClick={() => push('')}>+</button>
-                      {index > 0 && (
-                        <button onClick={() => remove(index)}>-</button>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          }}
-        </FieldArray>
-        <FieldArray name="web_pages">
-          {({ push, remove, form }) => {
-            const {
-              values: { web_pages },
-            } = form;
-            return (
-              <div>
-                <label htmlFor="web_pages">Web Pages</label>
-                {web_pages.map((_: string, index: number) => {
-                  return (
-                    <div key={index}>
-                      <Field
-                        name={`web_pages[${index}]`}
-                        placeholder="https://google.com"
-                        type="text"
-                      />
-                      <button onClick={() => push('')}>+</button>
-                      {index > 0 && (
-                        <button onClick={() => remove(index)}>-</button>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          }}
-        </FieldArray>
+        <FormArray selectedKey="domains" label="Domains" name="domains" />
+        <FormArray selectedKey="web_pages" label="Web Pages" name="web_pages" />
         <Btn type="submit">Submit</Btn>
       </Form>
     </Formik>

@@ -11,58 +11,61 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+interface IFormValue {
+  country: string;
+  search: string;
+}
+
 export default function Home() {
   const router = useRouter();
-
-  const filteredCountryList = countryList.map((country) => country.name);
+  const { isReady, query } = router;
+  const { search: qSearch, country: qCountry } = query;
   const [loading, setLoading] = useState(true);
   const [universities, setUniversities] = useState<IUniversity[] | []>([]);
   const [country, setCountry] = useState('Singapore');
+  const filteredCountryList = countryList.map((country) => country.name);
 
-  const fetchCountries = async (country: string) => {
-    if (router.query != null) {
-      const url = `/search?country=${country}&name=${router.query.search}`;
-      const results: IUniversity[] = (await axiosInstance.get(url)).data;
-      const names = results.map((result) => result.name);
-      const newResults = results.filter((result, index) =>
-        names.includes(result.name, index + 1),
-      );
-      console.log(results);
-      console.log(newResults);
-      if (router.query.search !== '') {
-        setUniversities(results);
-      } else {
-        setUniversities(results);
-      }
-      setLoading(false);
-    }
+  const initialValues: IFormValue = {
+    country: qCountry || country,
+    search: qSearch || '',
   };
 
   useEffect(() => {
-    if (router.isReady) {
+    if (isReady) {
       fetchCountries(country);
     }
-  }, [country, router.query.search]);
+  }, [country, qSearch, isReady]);
+
+  const fetchCountries = async (country: string) => {
+    const url = `/search?country=${country}&name=${qSearch || ''}`;
+    const results: IUniversity[] = (await axiosInstance.get(url)).data;
+    const names = results.map((result) => result.name);
+    const newResults = results.filter((result, index) =>
+      names.includes(result.name, index + 1),
+    );
+    console.log(url);
+    if (qSearch !== '') {
+      setUniversities(results);
+    } else {
+      setUniversities(newResults);
+    }
+    setLoading(false);
+  };
 
   const handleSubmit = async (values: { country: string }) => {
-    console.log(values);
     setCountry(values.country);
     router.push({ query: { ...values }, pathname: '/' }, undefined, {
       shallow: true,
     });
-
-    return 'something';
   };
 
   if (loading) return <Spinner />;
   return (
     <>
       <Formik
-        initialValues={{
-          country: router.query.country || country,
-          search: router.query.search || '',
-        }}
+        initialValues={initialValues}
         onSubmit={handleSubmit}
+        enableReinitialize={true}
       >
         <Form>
           <$Nav>

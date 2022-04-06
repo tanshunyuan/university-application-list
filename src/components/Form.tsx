@@ -1,4 +1,4 @@
-import { Field } from 'formik';
+import { Field, FieldArray } from 'formik';
 import styled from 'styled-components';
 interface IFormInput {
   name: string;
@@ -35,6 +35,42 @@ export const FormSelect = ({ values, name, label }: IFormSelect) => {
         })}
       </Field>
     </div>
+  );
+};
+
+interface IFormArray {
+  selectedKey: string;
+  label: string;
+  name: string;
+}
+export const FormArray = ({ selectedKey, label, name }: IFormArray) => {
+  return (
+    <FieldArray name={name}>
+      {({ push, remove, form }) => {
+        const { values: formValues } = form;
+        const value = formValues[selectedKey];
+        return (
+          <div>
+            <label htmlFor={name}>{label}</label>
+            {value.map((_: string, index: number) => {
+              return (
+                <div key={index}>
+                  <Field
+                    name={`${name}[${index}]`}
+                    placeholder="google.com"
+                    type="text"
+                  />
+                  <button onClick={() => push('')}>+</button>
+                  {index > 0 && (
+                    <button onClick={() => remove(index)}>-</button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        );
+      }}
+    </FieldArray>
   );
 };
 
