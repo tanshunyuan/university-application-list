@@ -31,7 +31,11 @@ export const UniForm = ({
     console.log('hi there');
   };
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+    <Formik
+      enableReinitialize={true}
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+    >
       <Form>
         {JSON.stringify(initialValues)}
         <FormInput
