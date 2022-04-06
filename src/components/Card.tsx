@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Text } from '@/styles/common';
+import Link from 'next/link';
 interface ICard {
   name: string;
   domains: Array<string>;
@@ -8,6 +9,7 @@ export const Card = ({ name, domains }: ICard) => {
   return (
     <$Card>
       <Text>{name}</Text>
+      <Link href={`/${name}`}>Learn More</Link>
     </$Card>
   );
 };

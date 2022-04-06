@@ -33,21 +33,24 @@ export default function Home() {
   return (
     <$Container>
       <$Heading>
-        <$HeadingText>Universities</$HeadingText>
+        <H2>Universities</H2>
         <p>Search Bar</p>
       </$Heading>
       <$Body>
-        <Formik initialValues={{ country }} onSubmit={handleSubmit}>
-          <Form>
-            <FormSelect
-              name="country"
-              label="Country"
-              values={filteredCountryList}
-            />
-            <$Button type="submit">Go</$Button>
-          </Form>
-        </Formik>
-        <div>
+        <$FormWrapper>
+          <Formik initialValues={{ country }} onSubmit={handleSubmit}>
+            <Form>
+              <FormSelect
+                name="country"
+                label="Country"
+                values={filteredCountryList}
+              />
+              <$Button type="submit">Go</$Button>
+            </Form>
+          </Formik>
+        </$FormWrapper>
+        <$UniversityList>
+          <H2>{country}</H2>
           {universities === [] ? (
             <p>There is nothing</p>
           ) : (
@@ -55,7 +58,7 @@ export default function Home() {
               return <Card key={index} name={uni.name} domains={uni.domains} />;
             })
           )}
-        </div>
+        </$UniversityList>
       </$Body>
     </$Container>
   );
@@ -66,10 +69,12 @@ const $Container = styled.div`
 const $Heading = styled.div`
   border-bottom: 1px solid black;
 `;
-const $HeadingText = styled(H2)``;
 const $Body = styled.div`
   display: grid;
   grid-template-columns: 10% 90%;
-  grid-gap: 3.5rem;
+`;
+const $FormWrapper = styled.div``;
+const $UniversityList = styled.div`
+  margin-left: 3.5rem;
 `;
 const $Button = styled(Btn)``;
