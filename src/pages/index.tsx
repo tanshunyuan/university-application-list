@@ -1,73 +1,108 @@
 import { Card } from '@/components/Card';
-import { FormSelect } from '@/components/Form';
+import { FormInput, FormSelect } from '@/components/Form';
+import { Spinner } from '@/components/Spinner';
 import { axiosInstance } from '@/helpers/axios';
 import { countryList } from '@/helpers/countrylist';
 import { IUniversity } from '@/helpers/types';
 import { Btn, H2 } from '@/styles/common';
 import { Formik, Form } from 'formik';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 export default function Home() {
+  const router = useRouter();
+
   const filteredCountryList = countryList.map((country) => country.name);
+  const [loading, setLoading] = useState(true);
   const [universities, setUniversities] = useState<IUniversity[] | []>([]);
   const [country, setCountry] = useState('Singapore');
+
   const fetchCountries = async (country: string) => {
-    console.log(country);
-    const results: IUniversity[] = (
-      await axiosInstance.get(`/search?country=${country}`)
-    ).data;
-    const names = results.map((result) => result.name);
-    const newResults = results.filter((result, index) =>
-      names.includes(result.name, index + 1),
-    );
-    setUniversities(newResults);
+    if (router.query != null) {
+      const url = `/search?country=${country}&name=${router.query.search}`;
+      const results: IUniversity[] = (await axiosInstance.get(url)).data;
+      const names = results.map((result) => result.name);
+      const newResults = results.filter((result, index) =>
+        names.includes(result.name, index + 1),
+      );
+      console.log(results);
+      console.log(newResults);
+      if (router.query.search !== '') {
+        setUniversities(results);
+      } else {
+        setUniversities(results);
+      }
+      setLoading(false);
+    }
   };
+
   useEffect(() => {
-    fetchCountries(country);
-  }, [country]);
+    if (router.isReady) {
+      fetchCountries(country);
+    }
+  }, [country, router.query.search]);
+
   const handleSubmit = async (values: { country: string }) => {
+    console.log(values);
     setCountry(values.country);
+    router.push({ query: { ...values }, pathname: '/' }, undefined, {
+      shallow: true,
+    });
+
     return 'something';
   };
+
+  if (loading) return <Spinner />;
   return (
     <>
-      <$Nav>
-        <Link href="/uni/create">
-          <$Button>Create</$Button>
-        </Link>
-      </$Nav>
-      <$Container>
-        <$Heading>
-          <H2>Universities</H2>
-          <p>Search Bar</p>
-        </$Heading>
-        <$Body>
-          <$FormWrapper>
-            <Formik initialValues={{ country }} onSubmit={handleSubmit}>
-              <Form>
+      <Formik
+        initialValues={{
+          country: router.query.country || country,
+          search: router.query.search || '',
+        }}
+        onSubmit={handleSubmit}
+      >
+        <Form>
+          <$Nav>
+            <Link href="/uni/create">
+              <$Button>Create</$Button>
+            </Link>
+          </$Nav>
+          <$Container>
+            <$Heading>
+              <H2>Universities</H2>
+              <FormInput
+                label="Search"
+                placeholder="Search"
+                type="text"
+                name="search"
+              />
+            </$Heading>
+            <$Body>
+              <$FormWrapper>
                 <FormSelect
                   name="country"
                   label="Country"
                   values={filteredCountryList}
                 />
                 <$Button type="submit">Go</$Button>
-              </Form>
-            </Formik>
-          </$FormWrapper>
-          <$UniversityList>
-            <H2>{country}</H2>
-            {universities === [] ? (
-              <p>There is nothing</p>
-            ) : (
-              universities.map((uni, index: number) => {
-                return <Card key={index} name={uni.name} />;
-              })
-            )}
-          </$UniversityList>
-        </$Body>
-      </$Container>
+              </$FormWrapper>
+              <$UniversityList>
+                <H2>{country}</H2>
+                {universities.length == 0 ? (
+                  <p>There is nothing</p>
+                ) : (
+                  universities.map((uni, index: number) => {
+                    return <Card key={index} name={uni.name} />;
+                  })
+                )}
+              </$UniversityList>
+            </$Body>
+          </$Container>
+        </Form>
+      </Formik>
     </>
   );
 }
