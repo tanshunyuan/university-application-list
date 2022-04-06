@@ -1,10 +1,12 @@
 import { axiosInstance } from '@/helpers/axios';
 import { IUniversity } from '@/helpers/types';
-import { H2 } from '@/styles/common';
+import { Btn, H2 } from '@/styles/common';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export default function Details({ data }: { data: IUniversity }) {
+  const router = useRouter();
   const { name, web_pages } = data;
   return (
     <div>
@@ -17,7 +19,7 @@ export default function Details({ data }: { data: IUniversity }) {
         );
       })}
       <Link href={`/uni/edit/${name}`}>Edit</Link>
-      <Link href="/">Go Back</Link>
+      <Btn onClick={() => router.back()}>Back</Btn>
     </div>
   );
 }
