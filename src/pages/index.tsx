@@ -5,6 +5,7 @@ import { countryList } from '@/helpers/countrylist';
 import { IUniversity } from '@/helpers/types';
 import { Btn, H2 } from '@/styles/common';
 import { Formik, Form } from 'formik';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
@@ -26,41 +27,48 @@ export default function Home() {
   useEffect(() => {
     fetchCountries(country);
   }, [country]);
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values: { country: string }) => {
     setCountry(values.country);
     return 'something';
   };
   return (
-    <$Container>
-      <$Heading>
-        <H2>Universities</H2>
-        <p>Search Bar</p>
-      </$Heading>
-      <$Body>
-        <$FormWrapper>
-          <Formik initialValues={{ country }} onSubmit={handleSubmit}>
-            <Form>
-              <FormSelect
-                name="country"
-                label="Country"
-                values={filteredCountryList}
-              />
-              <$Button type="submit">Go</$Button>
-            </Form>
-          </Formik>
-        </$FormWrapper>
-        <$UniversityList>
-          <H2>{country}</H2>
-          {universities === [] ? (
-            <p>There is nothing</p>
-          ) : (
-            universities.map((uni, index: number) => {
-              return <Card key={index} name={uni.name} />;
-            })
-          )}
-        </$UniversityList>
-      </$Body>
-    </$Container>
+    <>
+      <$Nav>
+        <Link href="/uni/create">
+          <$Button>Create</$Button>
+        </Link>
+      </$Nav>
+      <$Container>
+        <$Heading>
+          <H2>Universities</H2>
+          <p>Search Bar</p>
+        </$Heading>
+        <$Body>
+          <$FormWrapper>
+            <Formik initialValues={{ country }} onSubmit={handleSubmit}>
+              <Form>
+                <FormSelect
+                  name="country"
+                  label="Country"
+                  values={filteredCountryList}
+                />
+                <$Button type="submit">Go</$Button>
+              </Form>
+            </Formik>
+          </$FormWrapper>
+          <$UniversityList>
+            <H2>{country}</H2>
+            {universities === [] ? (
+              <p>There is nothing</p>
+            ) : (
+              universities.map((uni, index: number) => {
+                return <Card key={index} name={uni.name} />;
+              })
+            )}
+          </$UniversityList>
+        </$Body>
+      </$Container>
+    </>
   );
 }
 const $Container = styled.div`
@@ -81,3 +89,4 @@ const $UniversityList = styled.div`
   width: 100%;
 `;
 const $Button = styled(Btn)``;
+const $Nav = styled.nav``;

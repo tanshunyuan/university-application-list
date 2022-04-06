@@ -1,23 +1,14 @@
 import { axiosInstance } from '@/helpers/axios';
 import { IUniversity } from '@/helpers/types';
-import { H2 } from '@/styles/common';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { GetServerSidePropsContext } from 'next';
+import { UniForm } from '@/components/UniForm';
 import Link from 'next/link';
 
-export default function Details({ data }: { data: IUniversity }) {
-  const { name, web_pages } = data;
+export default function EditUniversity({ data }: { data: IUniversity }) {
   return (
     <div>
-      <H2>{name}</H2>
-      {web_pages.map((link, index) => {
-        return (
-          <a href={link} target="_blank" rel="noreferrer" key={index}>
-            {link}
-          </a>
-        );
-      })}
-      <Link href={`/uni/edit/${name}`}>Edit</Link>
       <Link href="/">Go Back</Link>
+      <UniForm data={data} isEdit={true} />
     </div>
   );
 }
