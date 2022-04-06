@@ -2,12 +2,15 @@ import styled from 'styled-components';
 import { Text } from '@/styles/common';
 import Link from 'next/link';
 import { IUniversity } from '@/helpers/types';
-type UniversityName = Pick<IUniversity, 'name'>;
-export const Card = ({ name }: UniversityName) => {
+type CardData = Pick<IUniversity, 'id' | 'name' | 'country'>;
+export const Card = ({ name, id, country }: CardData) => {
   return (
     <$Card>
       <Text>{name}</Text>
-      <Link href={`/details/${name}`}>Learn More</Link>
+      {/* <Link href={`/details/${id}`}>Learn More</Link> */}
+      <Link href={{ pathname: `/details/${id}`, query: { country } }}>
+        Learn More
+      </Link>
     </$Card>
   );
 };

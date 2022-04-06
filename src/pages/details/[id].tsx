@@ -1,5 +1,5 @@
 import { axiosInstance } from '@/helpers/axios';
-import { IUniversity } from '@/helpers/types';
+import { IApi, IUniversity } from '@/helpers/types';
 import { Btn, H2 } from '@/styles/common';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Link from 'next/link';
@@ -25,13 +25,13 @@ export default function Details({ data }: { data: IUniversity }) {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const universityName = context.query.id;
-  const results: IUniversity[] = (
-    await axiosInstance.get(`/search?name=${universityName}`)
-  ).data;
+  const { id, country } = context.query;
+  console.log(country);
+  const results: IApi = (await axiosInstance.get(`?country=${country}`)).data;
+  const universitiy = results.data.find((result) => result.id == id);
   return {
     props: {
-      data: results[0],
+      data: universitiy,
     },
   };
 }

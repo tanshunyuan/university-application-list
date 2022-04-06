@@ -3,7 +3,7 @@ import { FormInput, FormSelect } from '@/components/Form';
 import { Spinner } from '@/components/Spinner';
 import { axiosInstance } from '@/helpers/axios';
 import { countryList } from '@/helpers/countrylist';
-import { IUniversity } from '@/helpers/types';
+import { IApi, IUniversity } from '@/helpers/types';
 import { Btn, H2 } from '@/styles/common';
 import { Formik, Form } from 'formik';
 import Link from 'next/link';
@@ -37,18 +37,10 @@ export default function Home() {
   }, [country, qSearch, isReady]);
 
   const fetchCountries = async (country: string) => {
-    const url = `/search?country=${country}&name=${qSearch || ''}`;
-    const results: IUniversity[] = (await axiosInstance.get(url)).data;
-    const names = results.map((result) => result.name);
-    const newResults = results.filter((result, index) =>
-      names.includes(result.name, index + 1),
-    );
-    console.log(url);
-    if (qSearch !== '') {
-      setUniversities(results);
-    } else {
-      setUniversities(newResults);
-    }
+    const url = `?country=${country}`;
+    const results: IApi = (await axiosInstance.get(url)).data;
+    const universitiesData = results.data;
+    setUniversities(universitiesData);
     setLoading(false);
   };
 
@@ -98,7 +90,14 @@ export default function Home() {
                   <p>There is nothing</p>
                 ) : (
                   universities.map((uni, index: number) => {
-                    return <Card key={index} name={uni.name} />;
+                    return (
+                      <Card
+                        key={index}
+                        name={uni.name}
+                        id={uni.id}
+                        country={uni.country}
+                      />
+                    );
                   })
                 )}
               </$UniversityList>
