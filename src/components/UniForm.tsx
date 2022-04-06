@@ -9,11 +9,11 @@ interface IUniForm {
   webpage: string;
 }
 export const UniForm = ({
-  data,
+  data = [],
   isEdit = false,
 }: {
-  data: IUniversity;
-  isEdit: boolean;
+  data?: IUniversity | [];
+  isEdit?: boolean;
 }) => {
   const [initialValues, setInitialValues] = useState({});
   useEffect(() => {
@@ -23,7 +23,7 @@ export const UniForm = ({
       webpage: '',
     };
     setInitialValues(meme);
-    if (isEdit) {
+    if (isEdit && data !== []) {
       setInitialValues(data);
     }
   }, [isEdit, data]);
