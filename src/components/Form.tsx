@@ -24,7 +24,7 @@ export const FormSelect = ({ values, name, label }: IFormSelect) => {
   return (
     <div>
       <label htmlFor={name}>{label}</label>
-      <Field component="select" id="location" name={name}>
+      <Field component="select" id={name} name={name}>
         {values.map((value, index) => {
           return (
             <option value={value} key={index}>
