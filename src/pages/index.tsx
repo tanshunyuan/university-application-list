@@ -1,22 +1,18 @@
-import { Universities } from '@/components/Universities';
-import { FormInput, FormSelect } from '@/components/Form';
-import { Spinner } from '@/components/Spinner';
-import { axiosInstance } from '@/helpers/axios';
-import { countryList } from '@/helpers/countrylist';
-import {
-  IApi,
-  IHomeFormValue,
-  IHomeParams,
-  IUniversity,
-} from '@/helpers/types';
-import { Btn, BtnSm, H2 } from '@/styles/common';
 import { Formik, Form } from 'formik';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
+
+import { IHomeFormValue, IHomeParams, IUniversity } from '@/helpers/types';
+import { Universities } from '@/components/Universities';
+import { FormInput, FormSelect } from '@/components/Form';
+import { Spinner } from '@/components/Spinner';
+import { countryList } from '@/helpers/countrylist';
+import { Btn, BtnSm, H2 } from '@/styles/common';
 import { FeaturedCard } from '@/components/FeaturedCard';
+import { fetchCountries, fetchFeaturedUniversities } from '@/helpers/utils';
 
 export default function Home() {
   const router = useRouter();
@@ -45,30 +41,6 @@ export default function Home() {
     limit: qLimit,
   };
 
-  const fetchCountries = async () => {
-    const url = `?country=${qCountry}&limit=${qLimit}&page=${qPage}`;
-    const results: IApi = (await axiosInstance.get(url)).data;
-    let universitiesData = results.data;
-    if (qSearch !== '') {
-      universitiesData = universitiesData.filter(({ name }) => {
-        const lName = name.toLowerCase();
-        const queryName = qSearch.toLowerCase().trim();
-        return lName.includes(queryName);
-      });
-    }
-    setUniversities(universitiesData);
-    setTotalPages(Math.ceil(results.total / Number(qLimit)));
-    stopLoading();
-  };
-
-  const fetchFeaturedUniversities = async () => {
-    const url = `?country=${qCountry}&limit=3`;
-    const results: IApi = (await axiosInstance.get(url)).data;
-    const universitiesData = results.data;
-    setFeaturedUniversities(universitiesData);
-    stopLoading();
-  };
-
   const handleSubmit = async (values: { country: string }) => {
     router.push({ query: { ...values }, pathname: '/' }, undefined, {
       shallow: true,
@@ -87,8 +59,20 @@ export default function Home() {
 
   useEffect(() => {
     if (isReady) {
-      fetchCountries();
-      fetchFeaturedUniversities();
+      fetchCountries({
+        country: qCountry,
+        search: qSearch,
+        limit: qLimit,
+        page: qPage,
+        setTotalPages,
+        setUniversities,
+        stopLoading,
+      });
+      fetchFeaturedUniversities({
+        country: qCountry,
+        setFeaturedUniversities,
+        stopLoading,
+      });
     }
   }, [qCountry, qSearch, qLimit, qPage, isReady]);
 
@@ -98,7 +82,7 @@ export default function Home() {
     <>
       <$Banner>
         <$Nav>
-          <Link href="/uni/create">
+          <Link href="/uni/create" passHref>
             <$CreateBtn>Create</$CreateBtn>
           </Link>
         </$Nav>
@@ -115,6 +99,7 @@ export default function Home() {
           })}
         </$BannerContent>
       </$Banner>
+
       <Formik
         initialValues={initialValues}
         onSubmit={handleSubmit}
@@ -169,16 +154,21 @@ export default function Home() {
   );
 }
 const $Banner = styled.div`
-  height: 30%;
+  height: min-content;
   background-color: black;
   margin-bottom: 2.5rem;
   padding-inline: 2rem;
+  @media all and (min-width: 1280px) {
+    height: 20%;
+  }
 `;
 const $BannerContent = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
   grid-gap: 1rem;
   color: white;
+  @media all and (min-width: 1280px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 `;
 const $Nav = styled.nav`
   padding-top: 1rem;

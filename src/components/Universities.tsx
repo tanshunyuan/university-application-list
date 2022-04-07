@@ -10,7 +10,7 @@ export const Universities = ({ universities, country }: IUniversitiesProps) => {
     <>
       <H2>{country}</H2>
       {universities.length == 0 ? (
-        <p>There is nothing</p>
+        <p aria-labelledby="no-results">No university display</p>
       ) : (
         universities.map((uni, index: number) => {
           return (

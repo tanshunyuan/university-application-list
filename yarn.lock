@@ -4269,6 +4269,11 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
+next-router-mock@0.6.5:
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/next-router-mock/-/next-router-mock-0.6.5.tgz#46258e1921587a892e29a3052cb0daa2cc503185"
+  integrity sha512-gh6phWv4YUhFON0rWGmc02ni91m68ICG1HTj2N9bi2Y0MIlp5Z12QITXF4lNtV33wuMeUzrs/Ik6XyNOZ8rmNQ==
+
 next@12.1.4:
   version "12.1.4"
   resolved "https://registry.yarnpkg.com/next/-/next-12.1.4.tgz#597a9bdec7aec778b442c4f6d41afd2c64a54b23"
