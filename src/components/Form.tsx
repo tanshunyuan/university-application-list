@@ -43,8 +43,14 @@ interface IFormArray {
   selectedKey: string;
   label: string;
   name: string;
+  placeholder: string;
 }
-export const FormArray = ({ selectedKey, label, name }: IFormArray) => {
+export const FormArray = ({
+  selectedKey,
+  label,
+  name,
+  placeholder,
+}: IFormArray) => {
   return (
     <FieldArray name={name}>
       {({ push, remove, form }) => {
@@ -58,7 +64,7 @@ export const FormArray = ({ selectedKey, label, name }: IFormArray) => {
                 <div key={index}>
                   <Field
                     name={`${name}[${index}]`}
-                    placeholder="google.com"
+                    placeholder={placeholder}
                     type="text"
                   />
                   <button onClick={() => push('')}>+</button>

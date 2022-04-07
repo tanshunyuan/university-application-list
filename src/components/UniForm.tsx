@@ -39,7 +39,11 @@ export const UniForm = ({ data, isEdit = false }: UniFormProps) => {
     }
   }, [isEdit, data]);
   const handleSubmit = (values: IUniForm, helpers: FormikHelpers<IUniForm>) => {
-    console.log('hi there');
+    const parsedValue = JSON.stringify(values, null, 2);
+    const editOrCreate = isEdit ? 'Edited' : 'Created';
+    window.alert(
+      `Your university has been successfully ${editOrCreate}!\n${parsedValue}`,
+    );
   };
   return (
     <Formik
@@ -50,38 +54,53 @@ export const UniForm = ({ data, isEdit = false }: UniFormProps) => {
     >
       {({ errors, touched }) => (
         <Form>
-          <FormInput
-            name="name"
-            label="Name"
-            placeholder="Slovika"
-            type="text"
-          />
-          {errors.name && touched.name ? (
-            <$ErrorMessage>{errors.name}</$ErrorMessage>
-          ) : null}
+          <$FormWrapper>
+            <FormInput
+              name="name"
+              label="Name"
+              placeholder="Slovika"
+              type="text"
+            />
+            {errors.name && touched.name ? (
+              <$ErrorMessage>{errors.name}</$ErrorMessage>
+            ) : null}
+          </$FormWrapper>
 
-          <FormInput
-            name="country"
-            label="Country"
-            placeholder="Slovika"
-            type="text"
-          />
-          {errors.country && touched.country ? (
-            <$ErrorMessage>{errors.country}</$ErrorMessage>
-          ) : null}
+          <$FormWrapper>
+            <FormInput
+              name="country"
+              label="Country"
+              placeholder="Slovika"
+              type="text"
+            />
+            {errors.country && touched.country ? (
+              <$ErrorMessage>{errors.country}</$ErrorMessage>
+            ) : null}
+          </$FormWrapper>
 
-          <FormArray selectedKey="domains" label="Domains" name="domains" />
-          {typeof errors.domains === 'object' ? (
-            <$ErrorMessage>{errors.domains}</$ErrorMessage>
-          ) : null}
-          <FormArray
-            selectedKey="web_pages"
-            label="Web Pages"
-            name="web_pages"
-          />
-          {typeof errors.web_pages === 'object' ? (
-            <$ErrorMessage>{errors.web_pages}</$ErrorMessage>
-          ) : null}
+          <$FormWrapper>
+            <FormArray
+              placeholder="google.com"
+              selectedKey="domains"
+              label="Domains"
+              name="domains"
+            />
+            {typeof errors.domains === 'object' ? (
+              <$ErrorMessage>{errors.domains}</$ErrorMessage>
+            ) : null}
+          </$FormWrapper>
+
+          <$FormWrapper>
+            <FormArray
+              placeholder="https://google.com"
+              selectedKey="web_pages"
+              label="Web Pages"
+              name="web_pages"
+            />
+            {typeof errors.web_pages === 'object' ? (
+              <$ErrorMessage>{errors.web_pages}</$ErrorMessage>
+            ) : null}
+          </$FormWrapper>
           <Btn type="submit">Submit</Btn>
         </Form>
       )}
@@ -92,4 +111,8 @@ export const UniForm = ({ data, isEdit = false }: UniFormProps) => {
 const $ErrorMessage = styled.div`
   color: red;
   font-size: ${(props) => props.theme.small}px;
+`;
+
+const $FormWrapper = styled.div`
+  margin-bottom: 0.5rem;
 `;
