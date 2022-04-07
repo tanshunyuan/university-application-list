@@ -9,7 +9,7 @@ import {
   IHomeParams,
   IUniversity,
 } from '@/helpers/types';
-import { Btn, H2 } from '@/styles/common';
+import { Btn, BtnSm, H2 } from '@/styles/common';
 import { Formik, Form } from 'formik';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -24,7 +24,7 @@ export default function Home() {
   const {
     search: qSearch = '',
     country: qCountry = '',
-    limit: qLimit = '',
+    limit: qLimit = '3',
     page: qPage = '1',
   } = query;
 
@@ -42,14 +42,8 @@ export default function Home() {
     limit: qLimit,
   };
 
-  useEffect(() => {
-    if (isReady) {
-      fetchCountries();
-    }
-  }, [country, qSearch, qLimit, qPage, isReady]);
-
   const fetchCountries = async () => {
-    const url = `?country=${country}&limit=${qLimit || 3}&page=${qPage}`;
+    const url = `?country=${country}&limit=${qLimit}&page=${qPage}`;
     const results: IApi = (await axiosInstance.get(url)).data;
     let universitiesData = results.data;
     if (qSearch !== '') {
@@ -80,8 +74,26 @@ export default function Home() {
       query: currentQuery,
     });
   };
+  useEffect(() => {
+    if (isReady && pathname === '/') {
+      router.push(
+        { query: { country, search: '', page: 1, limit: 3 } },
+        undefined,
+        {
+          shallow: true,
+        },
+      );
+    }
+  }, [isReady, pathname]);
+
+  useEffect(() => {
+    if (isReady) {
+      fetchCountries();
+    }
+  }, [country, qSearch, qLimit, qPage, isReady]);
 
   if (isLoading) return <Spinner />;
+
   return (
     <>
       <Formik
@@ -92,7 +104,7 @@ export default function Home() {
         <$Form>
           <$Nav>
             <Link href="/uni/create">
-              <$Button>Create</$Button>
+              <Btn>Create</Btn>
             </Link>
           </$Nav>
           <$Container>
@@ -100,7 +112,7 @@ export default function Home() {
               <H2>Universities</H2>
               <$SearchBar>
                 <FormInput placeholder="Search" type="text" name="search" />
-                <$Button type="submit">Go</$Button>
+                <Btn type="submit">Go</Btn>
               </$SearchBar>
             </$Heading>
             <$Body>
@@ -117,7 +129,7 @@ export default function Home() {
                   options={['3', '4', '5']}
                   onChange={(e) => console.log('event', e)}
                 />
-                <$Button type="submit">Go</$Button>
+                <BtnSm type="submit">Go</BtnSm>
               </$FormWrapper>
               <$UniversityList>
                 <Universities country={country} universities={universities} />
@@ -165,7 +177,6 @@ const $Body = styled.div`
   }
 `;
 const $FormWrapper = styled.div``;
-const $Button = styled(Btn)``;
 const $Nav = styled.nav``;
 const $Pagination = styled.div`
   display: flex;
@@ -186,7 +197,7 @@ const $SearchBar = styled.div`
   margin-bottom: 2.5rem;
   width: 100%;
   display: inline-flex;
-  gap: 1rem;
+  gap: 2rem;
   div {
     flex-grow: 1;
   }

@@ -19,5 +19,20 @@ export const TextBold = styled.p`
   font-weight: bold;
 `;
 export const Btn = styled.button`
+  background-color: transparent;
+  outline: none;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid black;
+  border-radius: 0.5rem;
   font-size: ${(props) => props.theme.btn}px;
+  cursor: pointer;
+  &:hover {
+    background-color: black;
+    color: white;
+  }
+`;
+
+export const BtnSm = styled(Btn)`
+  font-size: ${(props) => props.theme['btn-sm']}px;
+  padding: 0.5rem 1rem;
 `;
