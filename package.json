@@ -33,6 +33,7 @@
     "next": "12.1.4",
     "react": "18.0.0",
     "react-dom": "18.0.0",
+    "react-paginate": "8.1.2",
     "styled-components": "5.3.5",
     "yup": "0.32.11"
   },
