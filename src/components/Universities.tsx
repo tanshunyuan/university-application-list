@@ -1,6 +1,5 @@
 import { IUniversity } from '@/helpers/types';
 import { H2 } from '@/styles/common';
-import styled from 'styled-components';
 import { Card } from './Card';
 type IUniversitiesProps = {
   universities: IUniversity[];

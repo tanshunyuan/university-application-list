@@ -2,13 +2,15 @@ import { axiosInstance } from '@/helpers/axios';
 import { IUniversity, IApi } from '@/helpers/types';
 import { GetServerSidePropsContext } from 'next';
 import { UniForm } from '@/components/UniForm';
-import Link from 'next/link';
 import styled from 'styled-components';
+import { Btn } from '@/styles/common';
+import { useRouter } from 'next/router';
 
 export default function EditUniversity({ data }: { data: IUniversity }) {
+  const router = useRouter();
   return (
     <$Container>
-      <Link href="/">Go Back</Link>
+      <Btn onClick={() => router.back()}>Back</Btn>
       <UniForm data={data} isEdit={true} />
     </$Container>
   );

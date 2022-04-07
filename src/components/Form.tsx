@@ -21,9 +21,8 @@ interface IFormSelect {
   name: string;
   label: string;
   options: Array<string>;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
-export const FormSelect = ({ options, name, label, onChange }: IFormSelect) => {
+export const FormSelect = ({ options, name, label }: IFormSelect) => {
   return (
     <div>
       <label htmlFor={name}>{label}</label>

@@ -16,6 +16,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
+import { FeaturedCard } from '@/components/FeaturedCard';
 
 export default function Home() {
   const router = useRouter();
@@ -30,20 +31,22 @@ export default function Home() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [universities, setUniversities] = useState<IUniversity[] | []>([]);
-  const [country, setCountry] = useState('Singapore');
+  const [featuredUniversities, setFeaturedUniversities] = useState<
+    IUniversity[] | []
+  >([]);
   const [totalPages, setTotalPages] = useState(0);
   const filteredCountryList = countryList.map((country) => country.name);
   const startLoading = () => setIsLoading(true);
   const stopLoading = () => setIsLoading(false);
 
   const initialValues: IHomeFormValue = {
-    country: qCountry || country,
+    country: qCountry,
     search: qSearch,
     limit: qLimit,
   };
 
   const fetchCountries = async () => {
-    const url = `?country=${country}&limit=${qLimit}&page=${qPage}`;
+    const url = `?country=${qCountry}&limit=${qLimit}&page=${qPage}`;
     const results: IApi = (await axiosInstance.get(url)).data;
     let universitiesData = results.data;
     if (qSearch !== '') {
@@ -58,8 +61,15 @@ export default function Home() {
     stopLoading();
   };
 
+  const fetchFeaturedUniversities = async () => {
+    const url = `?country=${qCountry}&limit=3`;
+    const results: IApi = (await axiosInstance.get(url)).data;
+    const universitiesData = results.data;
+    setFeaturedUniversities(universitiesData);
+    stopLoading();
+  };
+
   const handleSubmit = async (values: { country: string }) => {
-    setCountry(values.country);
     router.push({ query: { ...values }, pathname: '/' }, undefined, {
       shallow: true,
     });
@@ -74,39 +84,43 @@ export default function Home() {
       query: currentQuery,
     });
   };
-  useEffect(() => {
-    if (isReady && pathname === '/') {
-      router.push(
-        { query: { country, search: '', page: 1, limit: 3 } },
-        undefined,
-        {
-          shallow: true,
-        },
-      );
-    }
-  }, [isReady, pathname]);
 
   useEffect(() => {
     if (isReady) {
       fetchCountries();
+      fetchFeaturedUniversities();
     }
-  }, [country, qSearch, qLimit, qPage, isReady]);
+  }, [qCountry, qSearch, qLimit, qPage, isReady]);
 
   if (isLoading) return <Spinner />;
 
   return (
     <>
+      <$Banner>
+        <$Nav>
+          <Link href="/uni/create">
+            <$CreateBtn>Create</$CreateBtn>
+          </Link>
+        </$Nav>
+        <$BannerContent>
+          {featuredUniversities.map((uni, index) => {
+            return (
+              <FeaturedCard
+                key={index}
+                name={uni.name}
+                id={uni.id}
+                country={uni.country}
+              ></FeaturedCard>
+            );
+          })}
+        </$BannerContent>
+      </$Banner>
       <Formik
         initialValues={initialValues}
         onSubmit={handleSubmit}
         enableReinitialize={true}
       >
         <$Form>
-          <$Nav>
-            <Link href="/uni/create">
-              <Btn>Create</Btn>
-            </Link>
-          </$Nav>
           <$Container>
             <$Heading>
               <H2>Universities</H2>
@@ -121,18 +135,16 @@ export default function Home() {
                   name="country"
                   label="Country"
                   options={filteredCountryList}
-                  onChange={(e) => setCountry(e.target.value)}
                 />
                 <FormSelect
                   name="limit"
                   label="Limit"
                   options={['3', '4', '5']}
-                  onChange={(e) => console.log('event', e)}
                 />
                 <BtnSm type="submit">Go</BtnSm>
               </$FormWrapper>
               <$UniversityList>
-                <Universities country={country} universities={universities} />
+                <Universities country={qCountry} universities={universities} />
               </$UniversityList>
             </$Body>
           </$Container>
@@ -156,6 +168,22 @@ export default function Home() {
     </>
   );
 }
+const $Banner = styled.div`
+  height: 30%;
+  background-color: black;
+  margin-bottom: 2.5rem;
+  padding-inline: 2rem;
+`;
+const $BannerContent = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 1rem;
+  color: white;
+`;
+const $Nav = styled.nav`
+  padding-top: 1rem;
+  margin-bottom: 1rem;
+`;
 const $Container = styled.div`
   margin-inline: 2rem;
 `;
@@ -176,8 +204,11 @@ const $Body = styled.div`
     grid-template-columns: 20% 80%;
   }
 `;
-const $FormWrapper = styled.div``;
-const $Nav = styled.nav``;
+const $FormWrapper = styled.div`
+  div {
+    margin-bottom: 1rem;
+  }
+`;
 const $Pagination = styled.div`
   display: flex;
   justify-content: center;
@@ -206,4 +237,12 @@ const $Form = styled(Form)`
   display: flex;
   flex-direction: column;
   height: 100%;
+`;
+const $CreateBtn = styled(Btn)`
+  color: white;
+  border: 1px solid white;
+  &:hover {
+    color: black;
+    background-color: white;
+  }
 `;
