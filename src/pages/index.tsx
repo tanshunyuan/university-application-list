@@ -14,12 +14,13 @@ import styled from 'styled-components';
 interface IFormValue {
   country: string;
   search: string;
+  limit: string;
 }
 
 export default function Home() {
   const router = useRouter();
   const { isReady, query } = router;
-  const { search: qSearch, country: qCountry } = query;
+  const { search: qSearch, country: qCountry, limit: qLimit } = query;
   const [loading, setLoading] = useState(true);
   const [universities, setUniversities] = useState<IUniversity[] | []>([]);
   const [country, setCountry] = useState('Singapore');
@@ -28,6 +29,7 @@ export default function Home() {
   const initialValues: IFormValue = {
     country: qCountry || country,
     search: qSearch || '',
+    limit: qLimit || '',
   };
 
   useEffect(() => {
@@ -35,10 +37,10 @@ export default function Home() {
       fetchCountries();
       console.log('change leh', country);
     }
-  }, [country, qSearch, isReady]);
+  }, [country, qSearch, qLimit, isReady]);
 
   const fetchCountries = async () => {
-    const url = `?country=${country}`;
+    const url = `?country=${country}&limit=${qLimit}`;
     const results: IApi = (await axiosInstance.get(url)).data;
     let universitiesData = results.data;
     if (qSearch !== '') {
@@ -89,6 +91,11 @@ export default function Home() {
                   name="country"
                   label="Country"
                   values={filteredCountryList}
+                />
+                <FormSelect
+                  name="limit"
+                  label="Limit"
+                  values={['3', '4', '5']}
                 />
                 <$Button type="submit">Go</$Button>
               </$FormWrapper>
