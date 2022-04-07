@@ -32,14 +32,22 @@ export default function Home() {
 
   useEffect(() => {
     if (isReady) {
-      fetchCountries(country);
+      fetchCountries();
+      console.log('change leh', country);
     }
   }, [country, qSearch, isReady]);
 
-  const fetchCountries = async (country: string) => {
+  const fetchCountries = async () => {
     const url = `?country=${country}`;
     const results: IApi = (await axiosInstance.get(url)).data;
-    const universitiesData = results.data;
+    let universitiesData = results.data;
+    if (qSearch !== '') {
+      universitiesData = universitiesData.filter(({ name }) => {
+        const lName = name.toLowerCase();
+        const queryName = qSearch.toLowerCase().trim();
+        return lName.includes(queryName);
+      });
+    }
     setUniversities(universitiesData);
     setLoading(false);
   };
@@ -116,14 +124,18 @@ const $Heading = styled.div`
 `;
 const $Body = styled.div`
   display: grid;
-  grid-template-columns: 20% 80%;
+  @media all and (min-width: 1280px) {
+    grid-template-columns: 20% 80%;
+  }
 `;
 const $FormWrapper = styled.div``;
 const $UniversityList = styled.div`
-  margin-left: 3.5rem;
   justify-self: center;
   max-width: 54rem;
   width: 100%;
+  @media all and (min-width: 1280px) {
+    margin-left: 3.5rem;
+  }
 `;
 const $Button = styled(Btn)``;
 const $Nav = styled.nav``;

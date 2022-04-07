@@ -4,7 +4,7 @@ import { Form, Formik, FieldArray, Field } from 'formik';
 import { useEffect, useState } from 'react';
 import { FormArray, FormInput } from './Form';
 
-type IUniForm = Pick<IUniversity, 'country' | 'domains' | 'web_pages'>;
+type IUniForm = Pick<IUniversity, 'name' | 'country' | 'domains' | 'web_pages'>;
 type UniFormProps = {
   data?: IUniversity | undefined;
   isEdit?: boolean;
@@ -13,6 +13,7 @@ type UniFormProps = {
 export const UniForm = ({ data, isEdit = false }: UniFormProps) => {
   console.log(data);
   const initialValues: IUniForm = {
+    name: '',
     country: '',
     domains: [''],
     web_pages: [''],
@@ -34,6 +35,7 @@ export const UniForm = ({ data, isEdit = false }: UniFormProps) => {
       onSubmit={handleSubmit}
     >
       <Form>
+        <FormInput name="name" label="Name" placeholder="Slovika" type="text" />
         <FormInput
           name="country"
           label="Country"

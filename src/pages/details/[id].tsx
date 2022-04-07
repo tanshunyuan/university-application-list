@@ -4,12 +4,13 @@ import { Btn, H2 } from '@/styles/common';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import styled from 'styled-components';
 
 export default function Details({ data }: { data: IUniversity }) {
   const router = useRouter();
-  const { name, web_pages } = data;
+  const { name, web_pages, country, id } = data;
   return (
-    <div>
+    <$Container>
       <H2>{name}</H2>
       {web_pages.map((link, index) => {
         return (
@@ -18,9 +19,11 @@ export default function Details({ data }: { data: IUniversity }) {
           </a>
         );
       })}
-      <Link href={`/uni/edit/${name}`}>Edit</Link>
+      <Link href={{ pathname: `/uni/edit/${id}`, query: { country } }}>
+        Edit
+      </Link>
       <Btn onClick={() => router.back()}>Back</Btn>
-    </div>
+    </$Container>
   );
 }
 
@@ -35,3 +38,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     },
   };
 }
+
+const $Container = styled.div`
+  margin-inline: 2rem;
+`;

@@ -1,26 +1,30 @@
 import { axiosInstance } from '@/helpers/axios';
-import { IUniversity } from '@/helpers/types';
+import { IUniversity, IApi } from '@/helpers/types';
 import { GetServerSidePropsContext } from 'next';
 import { UniForm } from '@/components/UniForm';
 import Link from 'next/link';
+import styled from 'styled-components';
 
 export default function EditUniversity({ data }: { data: IUniversity }) {
   return (
-    <div>
+    <$Container>
       <Link href="/">Go Back</Link>
       <UniForm data={data} isEdit={true} />
-    </div>
+    </$Container>
   );
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const universityName = context.query.id;
-  const results: IUniversity[] = (
-    await axiosInstance.get(`/search?name=${universityName}`)
-  ).data;
+  const { id, country } = context.query;
+  const results: IApi = (await axiosInstance.get(`?country=${country}`)).data;
+  const universitiy = results.data.find((result) => result.id == id);
   return {
     props: {
-      data: results[0],
+      data: universitiy,
     },
   };
 }
+
+const $Container = styled.div`
+  margin-inline: 2rem;
+`;
