@@ -1,4 +1,5 @@
 import { Field, FieldArray } from 'formik';
+import React from 'react';
 import styled from 'styled-components';
 interface IFormInput {
   name: string;
@@ -11,7 +12,7 @@ export const FormInput = ({ placeholder, type, name, label }: IFormInput) => {
   return (
     <div>
       {label && <label htmlFor={name}>{label}</label>}
-      <Field name={name} type={type} placeholder={placeholder} as="input" />
+      <Field name={name} type={type} placeholder={placeholder} as={$Input} />
     </div>
   );
 };
@@ -19,17 +20,18 @@ export const FormInput = ({ placeholder, type, name, label }: IFormInput) => {
 interface IFormSelect {
   name: string;
   label: string;
-  values: Array<string>;
+  options: Array<string>;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
-export const FormSelect = ({ values, name, label }: IFormSelect) => {
+export const FormSelect = ({ options, name, label, onChange }: IFormSelect) => {
   return (
     <div>
       <label htmlFor={name}>{label}</label>
       <Field id={name} name={name} as={$Select}>
-        {values.map((value, index) => {
+        {options.map((option, index) => {
           return (
-            <option value={value} key={index}>
-              {value}
+            <option value={option} key={index}>
+              {option}
             </option>
           );
         })}
@@ -76,4 +78,14 @@ export const FormArray = ({ selectedKey, label, name }: IFormArray) => {
 
 const $Select = styled.select`
   width: 100%;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  outline: none;
+`;
+const $Input = styled.input`
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  outline: none;
+  border: 1px solid black;
 `;

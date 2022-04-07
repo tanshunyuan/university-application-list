@@ -1,35 +1,26 @@
-import { Card } from '@/components/Card';
+import { Universities } from '@/components/Universities';
 import { FormInput, FormSelect } from '@/components/Form';
 import { Spinner } from '@/components/Spinner';
 import { axiosInstance } from '@/helpers/axios';
 import { countryList } from '@/helpers/countrylist';
-import { IApi, IUniversity } from '@/helpers/types';
-import { isNumber, isString } from '@/helpers/utils';
+import {
+  IApi,
+  IHomeFormValue,
+  IHomeParams,
+  IUniversity,
+} from '@/helpers/types';
 import { Btn, H2 } from '@/styles/common';
 import { Formik, Form } from 'formik';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ParsedUrlQuery } from 'querystring';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
-
-interface IFormValue {
-  country: string;
-  search: string;
-  limit: string;
-}
-interface IParams extends ParsedUrlQuery {
-  search: string;
-  country: string;
-  limit: string;
-  page: string;
-}
 
 export default function Home() {
   const router = useRouter();
   const { isReady, pathname } = router;
-  const query = router.query as IParams;
+  const query = router.query as IHomeParams;
   const {
     search: qSearch = '',
     country: qCountry = '',
@@ -45,7 +36,7 @@ export default function Home() {
   const startLoading = () => setIsLoading(true);
   const stopLoading = () => setIsLoading(false);
 
-  const initialValues: IFormValue = {
+  const initialValues: IHomeFormValue = {
     country: qCountry || country,
     search: qSearch,
     limit: qLimit,
@@ -69,7 +60,7 @@ export default function Home() {
       });
     }
     setUniversities(universitiesData);
-    setTotalPages(Math.ceil(results.total / qLimit));
+    setTotalPages(Math.ceil(results.total / Number(qLimit)));
     stopLoading();
   };
 
@@ -98,8 +89,7 @@ export default function Home() {
         onSubmit={handleSubmit}
         enableReinitialize={true}
       >
-        <Form>
-          {JSON.stringify(totalPages)}
+        <$Form>
           <$Nav>
             <Link href="/uni/create">
               <$Button>Create</$Button>
@@ -108,43 +98,29 @@ export default function Home() {
           <$Container>
             <$Heading>
               <H2>Universities</H2>
-              <FormInput
-                label="Search"
-                placeholder="Search"
-                type="text"
-                name="search"
-              />
+              <$SearchBar>
+                <FormInput placeholder="Search" type="text" name="search" />
+                <$Button type="submit">Go</$Button>
+              </$SearchBar>
             </$Heading>
             <$Body>
               <$FormWrapper>
                 <FormSelect
                   name="country"
                   label="Country"
-                  values={filteredCountryList}
+                  options={filteredCountryList}
+                  onChange={(e) => setCountry(e.target.value)}
                 />
                 <FormSelect
                   name="limit"
                   label="Limit"
-                  values={['3', '4', '5']}
+                  options={['3', '4', '5']}
+                  onChange={(e) => console.log('event', e)}
                 />
                 <$Button type="submit">Go</$Button>
               </$FormWrapper>
               <$UniversityList>
-                <H2>{country}</H2>
-                {universities.length == 0 ? (
-                  <p>There is nothing</p>
-                ) : (
-                  universities.map((uni, index: number) => {
-                    return (
-                      <Card
-                        key={index}
-                        name={uni.name}
-                        id={uni.id}
-                        country={uni.country}
-                      />
-                    );
-                  })
-                )}
+                <Universities country={country} universities={universities} />
               </$UniversityList>
             </$Body>
           </$Container>
@@ -163,7 +139,7 @@ export default function Home() {
               onPageChange={pagginationHandler}
             />
           </$Pagination>
-        </Form>
+        </$Form>
       </Formik>
     </>
   );
@@ -173,6 +149,14 @@ const $Container = styled.div`
 `;
 const $Heading = styled.div`
   border-bottom: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  h2 {
+    margin-bottom: 1.5rem;
+  }
 `;
 const $Body = styled.div`
   display: grid;
@@ -181,6 +165,15 @@ const $Body = styled.div`
   }
 `;
 const $FormWrapper = styled.div``;
+const $Button = styled(Btn)``;
+const $Nav = styled.nav``;
+const $Pagination = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  margin-bottom: 2rem;
+`;
+
 const $UniversityList = styled.div`
   justify-self: center;
   max-width: 54rem;
@@ -189,9 +182,17 @@ const $UniversityList = styled.div`
     margin-left: 3.5rem;
   }
 `;
-const $Button = styled(Btn)``;
-const $Nav = styled.nav``;
-const $Pagination = styled.div`
+const $SearchBar = styled.div`
+  margin-bottom: 2.5rem;
+  width: 100%;
+  display: inline-flex;
+  gap: 1rem;
+  div {
+    flex-grow: 1;
+  }
+`;
+const $Form = styled(Form)`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  height: 100%;
 `;

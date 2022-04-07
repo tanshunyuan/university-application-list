@@ -1,3 +1,5 @@
+import { ParsedUrlQuery } from 'querystring';
+
 export interface IUniversity {
   id: string;
   alpha_two_code: string;
@@ -30,4 +32,16 @@ export interface IApiLink {
   url: string | null;
   label: string;
   active: boolean;
+}
+
+export interface IHomeFormValue {
+  country: string;
+  search: string;
+  limit: string;
+}
+export interface IHomeParams extends ParsedUrlQuery {
+  search: string;
+  country: string;
+  limit: string;
+  page: string;
 }
