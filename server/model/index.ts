@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 import University from "./university";
 
 export const connectDb = (url: string) => {
@@ -7,7 +7,7 @@ export const connectDb = (url: string) => {
     .then(() => {
       console.log("Mongodb connected....");
     })
-    .catch((err) => console.log(err.message));
+    .catch((err: Error) => console.log(err.message));
 };
 
 export const models = { University };

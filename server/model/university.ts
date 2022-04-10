@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { nanoid } from "nanoid";
+const mongoose = require("mongoose");
+
 const universitySchema = new mongoose.Schema({
   name: String,
   alpha_two_code: String,
@@ -10,5 +10,6 @@ const universitySchema = new mongoose.Schema({
   web_pages: [String],
 });
 const University = mongoose.model("University", universitySchema);
+
 
 export default University;
