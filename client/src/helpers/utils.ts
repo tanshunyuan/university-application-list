@@ -58,6 +58,7 @@ export const fetchFeaturedUniversities = async ({
   const url = `?country=${country}&limit=3`;
   const results: IApi = (await axiosInstance.get(url)).data;
   const universitiesData = results.data;
+  console.log('universities data featured ==> ', universitiesData);
   setFeaturedUniversities(universitiesData);
   stopLoading();
 };

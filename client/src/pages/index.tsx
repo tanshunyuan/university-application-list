@@ -13,6 +13,7 @@ import { countryList } from '@/helpers/countrylist';
 import { Btn, BtnSm, H2 } from '@/styles/common';
 import { FeaturedCard } from '@/components/FeaturedCard';
 import { fetchCountries, fetchFeaturedUniversities } from '@/helpers/utils';
+import axios from 'axios';
 
 export default function Home() {
   const router = useRouter();
@@ -68,11 +69,11 @@ export default function Home() {
         setUniversities,
         stopLoading,
       });
-      fetchFeaturedUniversities({
-        country: qCountry,
-        setFeaturedUniversities,
-        stopLoading,
-      });
+      // fetchFeaturedUniversities({
+      //   country: qCountry,
+      //   setFeaturedUniversities,
+      //   stopLoading,
+      // });
     }
   }, [qCountry, qSearch, qLimit, qPage, isReady]);
 
