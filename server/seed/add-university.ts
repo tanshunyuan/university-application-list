@@ -1,7 +1,14 @@
-import University from "../model/university";
-import * as UNIVERSITY_DATAS from "./data.json";
+import * as dotenv from "dotenv";
+import * as mongoose from "mongoose";
+import * as path from "path";
 
-const UniversityList = UNIVERSITY_DATAS.data.map((data) => {
+import * as UNIVERSITY_DATAS from "./data.json";
+import { connectDb } from "../model";
+import University from "../model/university";
+
+dotenv.config({ path: path.join(__dirname, "..", ".env") });
+const DATABASE_URL = process.env.DATABASE_URL!;
+const UniversityList = UNIVERSITY_DATAS.data.map((data: any) => {
   const {
     name,
     country,
@@ -22,8 +29,18 @@ const UniversityList = UNIVERSITY_DATAS.data.map((data) => {
   });
 });
 
-export const SeedUniversities = async () => {
-  for (let i = 0; i < UniversityList.length; i++) {
-    await UniversityList[i].save();
+const SeedUniversities = async () => {
+  for (const University of UniversityList) {
+    await University.save();
   }
 };
+const seedDb = async () => {
+  await University.deleteMany({});
+  await SeedUniversities();
+};
+
+connectDb(DATABASE_URL);
+
+seedDb().then(() => {
+  mongoose.connection.close();
+});
