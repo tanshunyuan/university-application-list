@@ -3,6 +3,7 @@ import { models, connectDb } from "./model";
 import {
   getAllUniversities,
   getUniversitiesByCountry,
+  meme,
 } from "./model/university";
 import * as express from "express";
 import * as cors from "cors";
@@ -11,9 +12,6 @@ const PORT = process.env.PORT;
 const DATABASE_URL = process.env.DATABASE_URL!;
 
 const app = express();
-const formatResponse = (item: any) => {
-  return { data: item };
-};
 app.use(
   cors({
     origin: "*",
@@ -22,12 +20,28 @@ app.use(
 
 app.get("/", async (req: express.Request, res: express.Response) => {
   const { country, limit, page } = req.query;
-  if (country !== undefined && typeof country === "string" && country !== "") {
-    const result = await getUniversitiesByCountry(country);
-    res.status(200).json(formatResponse(result));
-  }
+  // if (country !== undefined && typeof country === "string" && country !== "") {
+  //   const result = await getUniversitiesByCountry(country);
+  //   res.status(200).json(formatResponse(result));
+  // }
   const result = await getAllUniversities();
-  // res.status(200).json(formatResponse(result));
+  if (country !== undefined && typeof country === "string" && country !== "") {
+    const nLimit = Number(limit);
+    const nPage = Number(page);
+    const { total, results } = await meme(country, nLimit, nPage);
+    const nextPage = nPage + 1;
+    const prevPage = nPage - 1;
+    const lastPage = Math.ceil(total[0].totalCount / nLimit);
+    res.status(200).json({
+      current_page: page,
+      per_page: limit,
+      next_page: nextPage < lastPage ? nextPage:null ,
+      prev_page: prevPage === 0 ? null : prevPage,
+      last_page: lastPage,
+      data: results,
+      total: total[0].totalCount,
+    });
+  }
 });
 
 connectDb(DATABASE_URL).then(async () => {
