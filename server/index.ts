@@ -24,24 +24,27 @@ app.get("/", async (req: express.Request, res: express.Response) => {
   //   const result = await getUniversitiesByCountry(country);
   //   res.status(200).json(formatResponse(result));
   // }
-  const result = await getAllUniversities();
-  if (country !== undefined && typeof country === "string" && country !== "") {
-    const nLimit = Number(limit);
-    const nPage = Number(page);
-    const { total, results } = await meme(country, nLimit, nPage);
-    const nextPage = nPage + 1;
-    const prevPage = nPage - 1;
-    const lastPage = Math.ceil(total[0].totalCount / nLimit);
-    res.status(200).json({
-      current_page: page,
-      per_page: limit,
-      next_page: nextPage < lastPage ? nextPage:null ,
-      prev_page: prevPage === 0 ? null : prevPage,
-      last_page: lastPage,
-      data: results,
-      total: total[0].totalCount,
-    });
+  const nLimit = Number(limit);
+  const nPage = Number(page);
+  const nCountry = country?.toString();
+  const { total, results } = await meme(nCountry, nLimit, nPage);
+  let totalCount = 0;
+  if (total[0] !== undefined) {
+    totalCount = total[0].totalCount;
   }
+
+  const nextPage = nPage + 1;
+  const prevPage = nPage - 1;
+  const lastPage = Math.ceil(totalCount / nLimit);
+  res.status(200).json({
+    current_page: page,
+    per_page: limit,
+    next_page: nextPage < lastPage ? nextPage : null,
+    prev_page: prevPage === 0 ? null : prevPage,
+    last_page: lastPage,
+    data: results,
+    total: totalCount,
+  });
 });
 
 connectDb(DATABASE_URL).then(async () => {

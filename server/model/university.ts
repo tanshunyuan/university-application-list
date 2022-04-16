@@ -35,7 +35,7 @@ export const getUniversitiesByCountry = async (country: string) => {
 };
 // sets default limit and pages
 // last and first page
-export const meme = async (country: string, limit = 10, page_num = 0) => {
+export const meme = async (country = "", limit = 10, page_num = 0) => {
   const skips = limit * (page_num - 1);
   const universities = await University.aggregate()
     .facet({
