@@ -7,6 +7,7 @@ import {
 } from "./model/university";
 import * as express from "express";
 import * as cors from "cors";
+import { Query } from "express-serve-static-core";
 
 const PORT = process.env.PORT;
 const DATABASE_URL = process.env.DATABASE_URL!;
@@ -18,33 +19,34 @@ app.use(
   })
 );
 
-app.get("/", async (req: express.Request, res: express.Response) => {
-  const { country, limit, page } = req.query;
-  // if (country !== undefined && typeof country === "string" && country !== "") {
-  //   const result = await getUniversitiesByCountry(country);
-  //   res.status(200).json(formatResponse(result));
-  // }
-  const nLimit = Number(limit);
-  const nPage = Number(page);
-  const nCountry = country?.toString();
-  const { total, results } = await meme(nCountry, nLimit, nPage);
-  let totalCount = 0;
-  if (total[0] !== undefined) {
-    totalCount = total[0].totalCount;
-  }
 
-  const nextPage = nPage + 1;
-  const prevPage = nPage - 1;
-  const lastPage = Math.ceil(totalCount / nLimit);
-  res.status(200).json({
-    current_page: page,
-    per_page: limit,
-    next_page: nextPage < lastPage ? nextPage : null,
-    prev_page: prevPage === 0 ? null : prevPage,
-    last_page: lastPage,
-    data: results,
-    total: totalCount,
-  });
+app.get("/", async (req: express.Request, res: express.Response) => {
+  const country = req.query.country?.toString() || "";
+  const limit = Number(req.query.limit);
+  const page = Number(req.query.page);
+
+  const { universities, error } = await meme(country, limit, page);
+  if (universities !== null && error === null) {
+    const { results, total } = universities;
+    let count = 0;
+    if(total.some(e => e.hasOwnProperty('totalCount'))){
+      count = total[0].totalCount
+    }
+    const nextPage = page + 1;
+    const prevPage = page - 1;
+    const lastPage = Math.ceil(count / limit);
+    res.status(200).json({
+      current_page: page,
+      per_page: limit,
+      next_page: nextPage < lastPage ? nextPage : null,
+      prev_page: prevPage === 0 ? null : prevPage,
+      last_page: lastPage,
+      data: results,
+      total: count,
+    });
+    return;
+  }
+  res.status(400).json({error, message:'Something Went Wrong'});
 });
 
 connectDb(DATABASE_URL).then(async () => {

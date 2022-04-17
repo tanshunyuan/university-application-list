@@ -1,4 +1,6 @@
 import * as mongoose from "mongoose";
+import { Schema, Types } from "mongoose";
+
 interface IUniversity {
   name: string;
   alpha_two_code: string;
@@ -35,16 +37,52 @@ export const getUniversitiesByCountry = async (country: string) => {
 };
 // sets default limit and pages
 // last and first page
-export const meme = async (country = "", limit = 10, page_num = 0) => {
-  const skips = limit * (page_num - 1);
-  const universities = await University.aggregate()
-    .facet({
-      results: [{ $match: { country } }, { $skip: skips }, { $limit: limit }],
-      total: [{ $match: { country } }, { $count: "totalCount" }],
-    })
-    .exec()
-    .then((results) => results[0]);
-  return universities;
+
+// interface IResult {
+//   universities: any | null;
+//   error: unknown | null;
+// }
+
+interface IUniversity {
+  _id: Types.ObjectId;
+  alpha_two_code: string;
+  country: string;
+  created_at: Date;
+  updated_at: Date;
+  "state-province": string | null;
+  domains: Array<string>;
+  name: string;
+  web_pages: Array<string>;
+}
+
+interface IResult {
+  universities: {
+    results: IUniversity[] | [];
+    total: Array<{ totalCount: number }> | [];
+  } | null;
+  error: unknown | null;
+}
+
+export const meme = async (
+  country = "",
+  limit = 10,
+  page_num = 0
+): Promise<IResult> => {
+  let results: IResult = { universities: null, error: null };
+  try {
+    const skips = limit * (page_num - 1);
+    const universities = await University.aggregate()
+      .facet({
+        results: [{ $match: { country } }, { $skip: skips }, { $limit: limit }],
+        total: [{ $match: { country } }, { $count: "totalCount" }],
+      })
+      .exec()
+      .then((results) => results[0]);
+    results.universities = universities;
+  } catch (error) {
+    results.error = error;
+  }
+  return results;
 };
 
 export default University;
