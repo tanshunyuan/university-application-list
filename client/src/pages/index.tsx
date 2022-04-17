@@ -14,6 +14,10 @@ import { Btn, BtnSm, H2 } from '@/styles/common';
 import { FeaturedCard } from '@/components/FeaturedCard';
 import { fetchCountries, fetchFeaturedUniversities } from '@/helpers/utils';
 
+//TODO:
+// 1. Create route for university
+// 2. Update university listing
+
 export default function Home() {
   const router = useRouter();
   const { isReady, pathname } = router;
