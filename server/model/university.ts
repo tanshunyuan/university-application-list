@@ -35,13 +35,6 @@ export const getUniversitiesByCountry = async (country: string) => {
   console.log("universities", universities);
   return universities;
 };
-// sets default limit and pages
-// last and first page
-
-// interface IResult {
-//   universities: any | null;
-//   error: unknown | null;
-// }
 
 interface IUniversity {
   _id: Types.ObjectId;
@@ -64,13 +57,14 @@ interface IResult {
 }
 
 export const meme = async (
-  country = "",
-  limit = 10,
-  page_num = 0
+  country: string,
+  limit: number,
+  page_num: number
 ): Promise<IResult> => {
   let results: IResult = { universities: null, error: null };
   try {
     const skips = limit * (page_num - 1);
+
     const universities = await University.aggregate()
       .facet({
         results: [{ $match: { country } }, { $skip: skips }, { $limit: limit }],

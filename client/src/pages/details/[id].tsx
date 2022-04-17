@@ -8,7 +8,7 @@ import styled from 'styled-components';
 
 export default function Details({ data }: { data: IUniversity }) {
   const router = useRouter();
-  const { name, web_pages, country, id } = data;
+  const { name, web_pages, country, _id } = data;
   return (
     <$Container>
       {Object.entries(data).length < 1 ? (
@@ -24,7 +24,7 @@ export default function Details({ data }: { data: IUniversity }) {
                 </a>
               );
             })}
-            <Link href={{ pathname: `/uni/edit/${id}`, query: { country } }}>
+            <Link href={{ pathname: `/uni/edit/${_id}`, query: { country } }}>
               Edit
             </Link>
           </$Body>
@@ -44,7 +44,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   ).data;
   const universitiy =
     results.data.length > 0
-      ? results.data.find((result) => result.id == id)
+      ? results.data.find((result) => result._id == id)
       : {};
   return {
     props: {

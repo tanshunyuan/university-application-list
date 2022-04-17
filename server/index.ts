@@ -22,8 +22,8 @@ app.use(
 
 app.get("/", async (req: express.Request, res: express.Response) => {
   const country = req.query.country?.toString() || "";
-  const limit = Number(req.query.limit);
-  const page = Number(req.query.page);
+  const limit = Number(req.query.limit) || 10;
+  const page = Number(req.query.page) || 1;
 
   const { universities, error } = await meme(country, limit, page);
   if (universities !== null && error === null) {

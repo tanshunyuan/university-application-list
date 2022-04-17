@@ -17,7 +17,7 @@ export const Universities = ({ universities, country }: IUniversitiesProps) => {
             <Card
               key={index}
               name={uni.name}
-              id={uni.id}
+              id={uni._id}
               country={uni.country}
             />
           );
