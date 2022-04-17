@@ -19,7 +19,7 @@ export default function EditUniversity({ data }: { data: IUniversity }) {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { id, country } = context.query;
   const results: IApi = (await axiosInstance.get(`?country=${country}`)).data;
-  const universitiy = results.data.find((result) => result.id == id);
+  const universitiy = results.data.find((result) => result._id == id);
   return {
     props: {
       data: universitiy,

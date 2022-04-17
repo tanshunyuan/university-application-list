@@ -13,7 +13,6 @@ import { countryList } from '@/helpers/countrylist';
 import { Btn, BtnSm, H2 } from '@/styles/common';
 import { FeaturedCard } from '@/components/FeaturedCard';
 import { fetchCountries, fetchFeaturedUniversities } from '@/helpers/utils';
-import axios from 'axios';
 
 export default function Home() {
   const router = useRouter();
