@@ -3,8 +3,8 @@ import { Text } from '@/styles/common';
 import Link from 'next/link';
 import { IUniversity } from '@/helpers/types';
 import { useRouter } from 'next/router';
-type CardData = Pick<IUniversity, 'id' | 'name' | 'country'>;
-export const Card = ({ name, id, country }: CardData) => {
+type CardData = Pick<IUniversity, '_id' | 'name' | 'country'>;
+export const Card = ({ name, _id: id, country }: CardData) => {
   const { query } = useRouter();
   return (
     <$Card>

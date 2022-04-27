@@ -21,12 +21,19 @@ interface IFormSelect {
   name: string;
   label: string;
   options: Array<string>;
+  emptySelection?: boolean;
 }
-export const FormSelect = ({ options, name, label }: IFormSelect) => {
+export const FormSelect = ({
+  options,
+  name,
+  label,
+  emptySelection = false,
+}: IFormSelect) => {
   return (
     <div>
       <label htmlFor={name}>{label}</label>
       <Field id={name} name={name} as={$Select}>
+        {emptySelection && <option value="">None</option>}
         {options.map((option, index) => {
           return (
             <option value={option} key={index}>
@@ -54,12 +61,12 @@ export const FormArray = ({
   return (
     <FieldArray name={name}>
       {({ push, remove, form }) => {
-        const { values: formValues } = form;
-        const value = formValues[selectedKey];
+        const { values: keyList } = form;
+        const listValue = keyList[selectedKey];
         return (
           <div>
             <label htmlFor={name}>{label}</label>
-            {value.map((_: string, index: number) => {
+            {listValue.map((_: string, index: number) => {
               return (
                 <div key={index}>
                   <Field
@@ -67,7 +74,12 @@ export const FormArray = ({
                     placeholder={placeholder}
                     type="text"
                   />
-                  <button onClick={() => push('')}>+</button>
+                  <button
+                    disabled={listValue.includes('')}
+                    onClick={() => push('')}
+                  >
+                    +
+                  </button>
                   {index > 0 && (
                     <button onClick={() => remove(index)}>-</button>
                   )}

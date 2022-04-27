@@ -72,11 +72,11 @@ export default function Home() {
         setUniversities,
         stopLoading,
       });
-      // fetchFeaturedUniversities({
-      //   country: qCountry,
-      //   setFeaturedUniversities,
-      //   stopLoading,
-      // });
+      fetchFeaturedUniversities({
+        country: qCountry,
+        setFeaturedUniversities,
+        stopLoading,
+      });
     }
   }, [qCountry, qSearch, qLimit, qPage, isReady]);
 
@@ -96,7 +96,7 @@ export default function Home() {
               <FeaturedCard
                 key={index}
                 name={uni.name}
-                id={uni.id}
+                id={uni._id}
                 country={uni.country}
               ></FeaturedCard>
             );
@@ -124,6 +124,7 @@ export default function Home() {
                   name="country"
                   label="Country"
                   options={filteredCountryList}
+                  emptySelection={true}
                 />
                 <FormSelect
                   name="limit"

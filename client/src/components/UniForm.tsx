@@ -2,9 +2,10 @@ import { IUniversity } from '@/helpers/types';
 import { Btn } from '@/styles/common';
 import { ErrorMessage, Form, Formik, FormikHelpers } from 'formik';
 import { useEffect, useState } from 'react';
-import { FormArray, FormInput } from './Form';
+import { FormArray, FormInput, FormSelect } from './Form';
 import * as Yup from 'yup';
 import styled from 'styled-components';
+import { countryList } from '@/helpers/countrylist';
 
 type IUniForm = Pick<IUniversity, 'name' | 'country' | 'domains' | 'web_pages'>;
 type UniFormProps = {
@@ -26,6 +27,7 @@ const UniFormSchema = Yup.object().shape({
 });
 
 export const UniForm = ({ data, isEdit = false }: UniFormProps) => {
+  const filteredCountryList = countryList.map((country) => country.name);
   const initialValues: IUniForm = {
     name: '',
     country: '',
@@ -67,11 +69,10 @@ export const UniForm = ({ data, isEdit = false }: UniFormProps) => {
           </$FormWrapper>
 
           <$FormWrapper>
-            <FormInput
+            <FormSelect
               name="country"
               label="Country"
-              placeholder="Slovika"
-              type="text"
+              options={filteredCountryList}
             />
             {errors.country && touched.country ? (
               <$ErrorMessage>{errors.country}</$ErrorMessage>
