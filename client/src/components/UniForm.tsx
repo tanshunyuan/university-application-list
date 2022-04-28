@@ -1,6 +1,6 @@
 import { IUniversity } from '@/helpers/types';
 import { Btn } from '@/styles/common';
-import { ErrorMessage, Form, Formik, FormikHelpers } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import { useEffect, useState } from 'react';
 import { FormArray, FormInput, FormSelect } from './Form';
 import * as Yup from 'yup';

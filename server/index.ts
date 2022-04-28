@@ -1,10 +1,6 @@
 import "dotenv/config";
 import { models, connectDb } from "./model";
-import {
-  getAllUniversities,
-  getUniversitiesByCountry,
-  meme,
-} from "./model/university";
+import { createUniversity, getUniversities } from "./model/university";
 import * as express from "express";
 import * as cors from "cors";
 import { Query } from "express-serve-static-core";
@@ -18,19 +14,19 @@ app.use(
     origin: "*",
   })
 );
-
+app.use(express.json());
 
 app.get("/", async (req: express.Request, res: express.Response) => {
   const country = req.query.country?.toString() || "";
   const limit = Number(req.query.limit) || 10;
   const page = Number(req.query.page) || 1;
 
-  const { universities, error } = await meme(country, limit, page);
+  const { universities, error } = await getUniversities(country, limit, page);
   if (universities !== null && error === null) {
     const { results, total } = universities;
     let count = 0;
-    if(total.some(e => e.hasOwnProperty('totalCount'))){
-      count = total[0].totalCount
+    if (total.some((e) => e.hasOwnProperty("totalCount"))) {
+      count = total[0].totalCount;
     }
     const nextPage = page + 1;
     const prevPage = page - 1;
@@ -46,7 +42,17 @@ app.get("/", async (req: express.Request, res: express.Response) => {
     });
     return;
   }
-  res.status(400).json({error, message:'Something Went Wrong'});
+  res.status(400).json({ error, message: "Something Went Wrong" });
+});
+
+app.post("/university", async (req: express.Request, res: express.Response) => {
+  const universityData = req.body;
+  const { university, error } = await createUniversity(universityData);
+  if (university !== null && error !== null) {
+    res.status(200).json({ university });
+    return;
+  }
+  res.status(400).json(error);
 });
 
 connectDb(DATABASE_URL).then(async () => {
