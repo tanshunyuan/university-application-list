@@ -8,8 +8,7 @@ const UniversitySchema = new mongoose.Schema<IUniversity>({
     required: true,
     trim: true,
   },
-  alpha_two_code:
-   {
+  alpha_two_code: {
     type: String,
     required: true,
     trim: true,
@@ -23,7 +22,7 @@ const UniversitySchema = new mongoose.Schema<IUniversity>({
     default: new Date(),
   },
   "state-province": { type: String, default: null },
-  country:{
+  country: {
     type: String,
     required: true,
     trim: true,
@@ -38,6 +37,16 @@ export const createUniversity = async (data: IUniversity) => {
   try {
     const university = new University(data);
     const result = await university.save();
+    console.log(result);
+    return { university: result, error: null };
+  } catch (error) {
+    return { university: null, error };
+  }
+};
+
+export const updateUniversity = async (id: string, data: IUniversity) => {
+  try {
+    const result = await University.findByIdAndUpdate(id, data);
     console.log(result);
     return { university: result, error: null };
   } catch (error) {

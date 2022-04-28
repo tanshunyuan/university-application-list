@@ -1,6 +1,10 @@
 import "dotenv/config";
 import { models, connectDb } from "./model";
-import { createUniversity, getUniversities } from "./model/university";
+import {
+  createUniversity,
+  getUniversities,
+  updateUniversity,
+} from "./model/university";
 import * as express from "express";
 import * as cors from "cors";
 import { Query } from "express-serve-static-core";
@@ -54,6 +58,23 @@ app.post("/university", async (req: express.Request, res: express.Response) => {
   }
   res.status(400).json(error);
 });
+
+app.patch(
+  "/university/:id",
+  async (req: express.Request, res: express.Response) => {
+    const updateData = req.body;
+    const universityId = req.params.id;
+    const { university, error } = await updateUniversity(
+      universityId,
+      updateData
+    );
+    if (university !== null && error !== null) {
+      res.status(200).json({ university });
+      return;
+    }
+    res.status(400).json(error);
+  }
+);
 
 connectDb(DATABASE_URL).then(async () => {
   app.listen(PORT, () => {
