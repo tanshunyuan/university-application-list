@@ -17,9 +17,12 @@ export default function EditUniversity({ data }: { data: IUniversity }) {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { id, country } = context.query;
-  const results: IApi = (await axiosInstance.get(`?country=${country}`)).data;
+  const { id, country, page, limit } = context.query;
+  const results: IApi = (
+    await axiosInstance.get(`?country=${country}&page=${page}&limit=${limit}`)
+  ).data;
   const universitiy = results.data.find((result) => result._id == id);
+  console.log(universitiy);
   return {
     props: {
       data: universitiy,

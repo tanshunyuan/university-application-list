@@ -12,7 +12,6 @@ const UniversityList = UNIVERSITY_DATAS.data.map((data: any) => {
   const {
     name,
     country,
-    alpha_two_code,
     web_pages,
     domains,
     created_at,
@@ -21,7 +20,6 @@ const UniversityList = UNIVERSITY_DATAS.data.map((data: any) => {
   return new University({
     name,
     country,
-    alpha_two_code,
     web_pages,
     domains,
     created_at,

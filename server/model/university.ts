@@ -8,11 +8,6 @@ const UniversitySchema = new mongoose.Schema<IUniversity>({
     required: true,
     trim: true,
   },
-  alpha_two_code: {
-    type: String,
-    required: true,
-    trim: true,
-  },
   created_at: {
     type: Date,
     default: new Date(),
@@ -33,11 +28,8 @@ const UniversitySchema = new mongoose.Schema<IUniversity>({
 const University = mongoose.model<IUniversity>("University", UniversitySchema);
 
 export const createUniversity = async (data: IUniversity) => {
-  // let results: IUniversityResult = { universities: null, error: null };
   try {
-    const university = new University(data);
-    const result = await university.save();
-    console.log(result);
+    const result = await new University(data).save();
     return { university: result, error: null };
   } catch (error) {
     return { university: null, error };
@@ -47,7 +39,6 @@ export const createUniversity = async (data: IUniversity) => {
 export const updateUniversity = async (id: string, data: IUniversity) => {
   try {
     const result = await University.findByIdAndUpdate(id, data);
-    console.log(result);
     return { university: result, error: null };
   } catch (error) {
     return { university: null, error };

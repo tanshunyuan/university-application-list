@@ -1,7 +1,6 @@
 import { Types } from "mongoose";
 export interface IUniversity {
   _id?: Types.ObjectId;
-  alpha_two_code: string;
   country: string;
   created_at: Date;
   updated_at: Date;
@@ -17,3 +16,4 @@ export interface IUniversityResult {
   } | null;
   error: unknown | null;
 }
+

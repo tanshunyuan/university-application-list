@@ -6,7 +6,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 
-export default function Details({ data }: { data: IUniversity }) {
+export default function Details({
+  data,
+  limit,
+  page,
+}: {
+  data: IUniversity;
+  limit: number;
+  page: number;
+}) {
   const router = useRouter();
   const { name, web_pages, country, _id } = data;
   return (
@@ -24,7 +32,12 @@ export default function Details({ data }: { data: IUniversity }) {
                 </a>
               );
             })}
-            <Link href={{ pathname: `/uni/edit/${_id}`, query: { country } }}>
+            <Link
+              href={{
+                pathname: `/uni/edit/${_id}`,
+                query: { country, limit, page },
+              }}
+            >
               Edit
             </Link>
           </$Body>
@@ -49,6 +62,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
       data: universitiy,
+      limit,
+      page,
     },
   };
 }

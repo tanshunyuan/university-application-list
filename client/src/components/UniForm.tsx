@@ -6,8 +6,12 @@ import { FormArray, FormInput, FormSelect } from './Form';
 import * as Yup from 'yup';
 import styled from 'styled-components';
 import { countryList } from '@/helpers/countrylist';
+import { axiosInstance } from '@/helpers/axios';
 
-type IUniForm = Pick<IUniversity, 'name' | 'country' | 'domains' | 'web_pages'>;
+type IUniForm = Pick<
+  IUniversity,
+  '_id' | 'name' | 'country' | 'domains' | 'web_pages'
+>;
 type UniFormProps = {
   data?: IUniversity | undefined;
   isEdit?: boolean;
@@ -29,6 +33,7 @@ const UniFormSchema = Yup.object().shape({
 export const UniForm = ({ data, isEdit = false }: UniFormProps) => {
   const filteredCountryList = countryList.map((country) => country.name);
   const initialValues: IUniForm = {
+    _id: '',
     name: '',
     country: '',
     domains: [''],
@@ -41,11 +46,28 @@ export const UniForm = ({ data, isEdit = false }: UniFormProps) => {
     }
   }, [isEdit, data]);
   const handleSubmit = (values: IUniForm, helpers: FormikHelpers<IUniForm>) => {
-    const parsedValue = JSON.stringify(values, null, 2);
-    const editOrCreate = isEdit ? 'Edited' : 'Created';
-    window.alert(
-      `Your university has been successfully ${editOrCreate}!\n${parsedValue}`,
-    );
+    if (!isEdit) {
+      delete values._id;
+      axiosInstance
+        .post('/university', values)
+        .then((res) => {
+          console.log(res);
+          return res;
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    } else {
+      axiosInstance
+        .patch(`/university/${values._id}`, values)
+        .then((res) => {
+          console.log(res);
+          return res;
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    }
   };
   return (
     <Formik

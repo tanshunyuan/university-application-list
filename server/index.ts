@@ -7,7 +7,6 @@ import {
 } from "./model/university";
 import * as express from "express";
 import * as cors from "cors";
-import { Query } from "express-serve-static-core";
 
 const PORT = process.env.PORT;
 const DATABASE_URL = process.env.DATABASE_URL!;
@@ -52,7 +51,8 @@ app.get("/", async (req: express.Request, res: express.Response) => {
 app.post("/university", async (req: express.Request, res: express.Response) => {
   const universityData = req.body;
   const { university, error } = await createUniversity(universityData);
-  if (university !== null && error !== null) {
+  console.log("create", university, error);
+  if (error === null) {
     res.status(200).json({ university });
     return;
   }
@@ -68,7 +68,7 @@ app.patch(
       universityId,
       updateData
     );
-    if (university !== null && error !== null) {
+    if (error === null) {
       res.status(200).json({ university });
       return;
     }

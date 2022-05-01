@@ -2,7 +2,6 @@ import { ParsedUrlQuery } from 'querystring';
 
 export interface IUniversity {
   _id: string;
-  alpha_two_code: string;
   country: string;
   created_at: Date;
   updated_at: Date;
