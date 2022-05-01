@@ -8,9 +8,8 @@ import styled from 'styled-components';
 import { countryList } from '@/helpers/countrylist';
 import { axiosInstance } from '@/helpers/axios';
 
-type IUniForm = Pick<
-  IUniversity,
-  '_id' | 'name' | 'country' | 'domains' | 'web_pages'
+type IUniForm = Partial<
+  Pick<IUniversity, '_id' | 'name' | 'country' | 'domains' | 'web_pages'>
 >;
 type UniFormProps = {
   data?: IUniversity | undefined;
