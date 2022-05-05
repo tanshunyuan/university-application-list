@@ -12,22 +12,13 @@ import { Spinner } from '@/components/Spinner';
 import { countryList } from '@/helpers/countrylist';
 import { Btn, BtnSm, H2 } from '@/styles/common';
 import { FeaturedCard } from '@/components/FeaturedCard';
-import { fetchCountries, fetchFeaturedUniversities } from '@/helpers/utils';
-
-//TODO:
-// 1. Create route for university
-// 2. Update university listing
+import { fetchUniversities, fetchFeaturedUniversities } from '@/helpers/utils';
 
 export default function Home() {
   const router = useRouter();
   const { isReady, pathname } = router;
   const query = router.query as IHomeParams;
-  const {
-    search: qSearch = '',
-    country: qCountry = '',
-    limit: qLimit = '3',
-    page: qPage = '1',
-  } = query;
+  const { search = '', country = '', limit = '3', page = '1' } = query;
 
   const [isLoading, setIsLoading] = useState(true);
   const [universities, setUniversities] = useState<IUniversity[] | []>([]);
@@ -36,13 +27,12 @@ export default function Home() {
   >([]);
   const [totalPages, setTotalPages] = useState(0);
   const filteredCountryList = countryList.map((country) => country.name);
-  const startLoading = () => setIsLoading(true);
   const stopLoading = () => setIsLoading(false);
 
   const initialValues: IHomeFormValue = {
-    country: qCountry,
-    search: qSearch,
-    limit: qLimit,
+    country,
+    search,
+    limit,
   };
 
   const handleSubmit = async (values: { country: string }) => {
@@ -63,22 +53,33 @@ export default function Home() {
 
   useEffect(() => {
     if (isReady) {
-      fetchCountries({
-        country: qCountry,
-        search: qSearch,
-        limit: qLimit,
-        page: qPage,
-        setTotalPages,
-        setUniversities,
-        stopLoading,
-      });
-      fetchFeaturedUniversities({
-        country: qCountry,
-        setFeaturedUniversities,
-        stopLoading,
-      });
+      const asyncFunction = async () => {
+        const { universities, totalPages } = await fetchUniversities({
+          country,
+          search,
+          limit,
+          page,
+        })
+        .catch(err => {
+            console.log(err)
+            return err
+          });
+
+        const { featuredUniversities } = await fetchFeaturedUniversities({
+          country,
+        }).catch(err => {
+            console.log(err)
+            return err
+          });
+
+        setUniversities(universities);
+        setFeaturedUniversities(featuredUniversities);
+        setTotalPages(totalPages);
+        stopLoading();
+      };
+      asyncFunction();
     }
-  }, [qCountry, qSearch, qLimit, qPage, isReady]);
+  }, [country, search, limit, page, isReady]);
 
   if (isLoading) return <Spinner />;
 
@@ -134,7 +135,7 @@ export default function Home() {
                 <BtnSm type="submit">Go</BtnSm>
               </$FormWrapper>
               <$UniversityList>
-                <Universities country={qCountry} universities={universities} />
+                <Universities country={country} universities={universities} />
               </$UniversityList>
             </$Body>
           </$Container>
@@ -146,7 +147,7 @@ export default function Home() {
               breakClassName={'break-me'}
               activeClassName={'active'}
               containerClassName={'pagination'}
-              initialPage={Number(qPage) - 1}
+              initialPage={Number(page) - 1}
               pageCount={totalPages}
               marginPagesDisplayed={2}
               pageRangeDisplayed={5}

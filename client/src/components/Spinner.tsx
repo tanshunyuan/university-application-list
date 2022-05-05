@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Spinner = () => {
-  return <$Spinner id="spinner" />;
+  return <$Spinner data-testid="spinner" />;
 };
 const $Spinner = styled.div`
   &,

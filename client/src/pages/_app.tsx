@@ -4,6 +4,8 @@ import { ThemeProvider } from 'styled-components';
 // eslint-disable-next-line import/extensions
 import '@/styles/global.css';
 
+import('../mocks').then(({setupMocks})=>{setupMocks()})
+
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={defaultTheme}>
