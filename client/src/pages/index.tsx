@@ -59,18 +59,15 @@ export default function Home() {
           search,
           limit,
           page,
-        })
-        .catch(err => {
-            console.log(err)
-            return err
-          });
+        }).catch((err) => {
+          return err;
+        });
 
         const { featuredUniversities } = await fetchFeaturedUniversities({
           country,
-        }).catch(err => {
-            console.log(err)
-            return err
-          });
+        }).catch((err) => {
+          return err;
+        });
 
         setUniversities(universities);
         setFeaturedUniversities(featuredUniversities);
@@ -139,21 +136,23 @@ export default function Home() {
               </$UniversityList>
             </$Body>
           </$Container>
-          <$Pagination>
-            <ReactPaginate
-              previousLabel={'previous'}
-              nextLabel={'next'}
-              breakLabel={'...'}
-              breakClassName={'break-me'}
-              activeClassName={'active'}
-              containerClassName={'pagination'}
-              initialPage={Number(page) - 1}
-              pageCount={totalPages}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={5}
-              onPageChange={pagginationHandler}
-            />
-          </$Pagination>
+          {totalPages !== 0 && (
+            <$Pagination>
+              <ReactPaginate
+                previousLabel={'previous'}
+                nextLabel={'next'}
+                breakLabel={'...'}
+                breakClassName={'break-me'}
+                activeClassName={'active'}
+                containerClassName={'pagination'}
+                initialPage={Number(page) - 1}
+                pageCount={totalPages}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={pagginationHandler}
+              />
+            </$Pagination>
+          )}
         </$Form>
       </Formik>
     </>
